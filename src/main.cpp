@@ -12,6 +12,10 @@ typedef unsigned long ulong;
 CRGB leds[NUM_LEDS];
 
 ulong lastUpdateMicros;
+ulong lastSerialUpdateMicros;
+
+LedRace ledRace;
+TestPattern testPattern;
 
 PatternRenderer* activePatternRenderer;
 
@@ -19,32 +23,31 @@ void setup() {
   Serial.begin(115200);
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 
-
   lastUpdateMicros = 0;
-
-  LedRace ledRace;
-  TestPattern testPattern;
 
   activePatternRenderer = &testPattern;
 }
 
-
-
-void loop() {
-
-  activePatternRenderer->render(leds);
-
-  FastLED.show();
-
-  ulong stopMicros = micros();
-
-  // Wait for 10ms (10,000us)
-  ulong elapsed;
-  do {
-    elapsed = stopMicros - lastUpdateMicros; 
+ulong elapsedMicros(ulong since) {
+    ulong microsNow = micros();
+    ulong elapsed = microsNow - lastUpdateMicros; 
     if (elapsed < 0) {
       // clock has overflowed
       elapsed += ULONG_MAX;
     }
-  } while (elapsed < INTERVAL_MICROS);
+    return elapsed;
 }
+
+void loop() {
+
+  activePatternRenderer->render(leds);
+  FastLED.show();
+
+  // Wait for 10ms (10,000us)
+  ulong elapsed;
+  do {
+    elapsed = elapsedMicros(lastUpdateMicros); 
+  } while (elapsed < INTERVAL_MICROS);
+  lastUpdateMicros = micros();
+}
+
