@@ -14,6 +14,6 @@ void led_race_loop(CRGB* leds) {
 
   for (int i = 0; i < NUM_LEDS; i++) {
     int red = i == offsetPattern ? 255 : 0;
-    leds[i].setRGB(red, 10, 0);
+    leds[i].setRGB(red, 0, 0);
   }
 }
