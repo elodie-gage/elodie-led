@@ -7,14 +7,14 @@ import sys
 target = ctypes.CDLL('./simulation.so')
 
 # Constants
-LEDS_SIDE = 100
-LEDS_ARCH = 50
+LEDS_SIDE = 132
+LEDS_ARCH = 82
 LED_SIZE = 4
-SPACING = 1
+SPACING = 0
 R2O2 = 0.70710678
 NUM_LEDS = LEDS_SIDE * 2 + LEDS_ARCH * 2
 WINDOW_WIDTH = LEDS_ARCH * 2 * (LED_SIZE+SPACING)
-WINDOW_HEIGHT = LEDS_ARCH *  (LED_SIZE+SPACING) + LEDS_SIDE * (LED_SIZE+SPACING)
+WINDOW_HEIGHT = R2O2 * LEDS_ARCH * (LED_SIZE+SPACING) + LEDS_SIDE * (LED_SIZE+SPACING) + 20
 BACKGROUND_COLOR = (0, 0, 0)
 LED_OFF_COLOR = (0, 0, 0)
 
@@ -32,7 +32,7 @@ lastUpdate = ctypes.c_ulong(0)
 def draw_leds():
     screen.fill(BACKGROUND_COLOR)
 
-    position = (10.0, 10.0)
+    position = (10.0, 2.0)
 
     for i in range(0, NUM_LEDS):
         r = ledsArray[i * 3 + 0]
@@ -40,11 +40,11 @@ def draw_leds():
         b = ledsArray[i * 3 + 2]
         color = (r, g, b)
 
-        if i < 100:
+        if i < 132:
             position = (position[0], position[1]+1)
-        elif i < 150:
+        elif i < 214:
             position = (position[0]+R2O2, position[1]+R2O2)
-        elif i < 200:
+        elif i < 296:
             position = (position[0]+R2O2, position[1]-R2O2)
         else:
             position = (position[0], position[1]-1)

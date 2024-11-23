@@ -2,13 +2,16 @@
 #include "simulation.h"
 #include "common_led.h"
 
+LedRace ledRace;
+TestPattern testPattern;
+Rainbow rainbow;
+
+
 extern "C" void render(CRGB* leds) {
-  LedRace ledRace;
-  TestPattern testPattern;
 
   PatternRenderer* patternRenderer; 
 
-  patternRenderer = &testPattern;
+  patternRenderer = &rainbow;
 
   patternRenderer->render(leds);
 }
