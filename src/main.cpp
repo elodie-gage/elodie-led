@@ -23,8 +23,9 @@ void setup() {
   lastUpdateMicros = 0;
 
   LedRace ledRace;
+  TestPattern testPattern;
 
-  activePatternRenderer = &ledRace;
+  activePatternRenderer = &testPattern;
 }
 
 
