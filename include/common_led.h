@@ -1,6 +1,6 @@
 
 #include <FastLED.h>
-#define NUM_LEDS 300
+#define NUM_LEDS 428
 
 class PatternRenderer {
    public:

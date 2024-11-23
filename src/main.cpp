@@ -25,7 +25,7 @@ void setup() {
 
   lastUpdateMicros = 0;
 
-  activePatternRenderer = &testPattern;
+  activePatternRenderer = &ledRace;
 }
 
 ulong elapsedMicros(ulong since) {
