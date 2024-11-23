@@ -63,11 +63,7 @@ try:
                 pygame.quit()
                 sys.exit()
 
-        currentMillis = int(time.time() * 1000)  # Milliseconds since epoch
-        led_race.led_race_loop(
-            ledsArray, 
-            ctypes.c_ulong(currentMillis) 
-        )
+        led_race.led_race_loop(ledsArray)
         draw_leds()
         time.sleep(0.01)  # Match the 10 ms update interval
 
