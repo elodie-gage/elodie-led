@@ -14,7 +14,7 @@ CRGB leds[NUM_LEDS];
 ulong lastUpdateMicros;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 
   lastUpdateMicros = 0;
