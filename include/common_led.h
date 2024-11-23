@@ -12,3 +12,8 @@ class LedRace: public PatternRenderer  {
    public:
       void render(CRGB* leds) override;
 };
+
+class TestPattern: public PatternRenderer  {
+   public:
+      void render(CRGB* leds) override;
+};

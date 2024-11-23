@@ -4,10 +4,11 @@
 
 extern "C" void render(CRGB* leds) {
   LedRace ledRace;
+  TestPattern testPattern;
 
   PatternRenderer* patternRenderer; 
 
-  patternRenderer = &ledRace;
+  patternRenderer = &testPattern;
 
   patternRenderer->render(leds);
 }
