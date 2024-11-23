@@ -2,7 +2,6 @@
 #include <FastLED.h>
 
 static int offsetPattern;
-static unsigned long lastUpdate = 0;
 
 void LedRace::render(CRGB* leds) {
   offsetPattern++;  // Increment the offset
