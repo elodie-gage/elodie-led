@@ -17,6 +17,7 @@ ulong lastSerialUpdateMicros;
 LedRace ledRace;
 TestPattern testPattern;
 Rainbow rainbow;
+Snowflakes snowflakes;
 
 PatternRenderer* activePatternRenderer;
 
@@ -26,7 +27,7 @@ void setup() {
 
   lastUpdateMicros = 0;
 
-  activePatternRenderer = &testPattern;
+  activePatternRenderer = &snowflakes;
 }
 
 ulong elapsedMicros(ulong since) {

@@ -10,10 +10,13 @@ void Snowflakes::render(CRGB* leds) {
     // Clear LEDs
     fill_solid(leds, NUM_LEDS, CRGB::Black);
 
+    int valP = 2;
     // Spawn new snowflakes
-    if (rand() % 100 < 10) { // 10% chance to spawn a new snowflake
-        snowflakesLeft.push_back(0);   // Top of the left side
+    if (rand() % 100 < valP) { // P% chance to spawn a new snowflake
         snowflakesRight.push_back(0);  // Top of the right side
+    }
+    if (rand() % 100 < valP) { // P% chance to spawn a new snowflake
+        snowflakesLeft.push_back(0);   // Top of the left side
     }
 
     // Update snowflake positions
