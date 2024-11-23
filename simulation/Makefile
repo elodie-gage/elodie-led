@@ -10,9 +10,8 @@ compile:
 		-o simulation.so \
 		${PROJ}/.pio/libdeps/lolin_d32/FastLED/src/hsv2rgb.cpp \
 		${PROJ}/.pio/libdeps/lolin_d32/FastLED/src/colorutils.cpp \
-		${PROJ}/src/led_race.cpp \
-		${PROJ}/src/test_pattern.cpp \
-		${PROJ}/src/rainbow.cpp \
-		${PROJ}/src/snowflakes.cpp \
+		${PROJ}/src/patterns/*.cpp \
 		simulation.cpp
-		
+	
+clean:
+	rm simulation.so

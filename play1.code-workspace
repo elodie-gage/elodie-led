@@ -8,6 +8,7 @@
 	"settings": {
 		"files.associations": {
 			"new": "cpp"
-		}
+		},
+		"makefile.makefilePath": "simulation/Makefile"
 	}
 }
