@@ -25,3 +25,8 @@ class Rainbow: public PatternRenderer  {
    public:
       void render(CRGB* leds) override;
 };
+
+class Snowflakes: public PatternRenderer  {
+   public:
+      void render(CRGB* leds) override;
+};
