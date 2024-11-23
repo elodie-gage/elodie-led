@@ -4,7 +4,7 @@ import time
 import sys
 
 # Load the compiled C library
-led_race = ctypes.CDLL('./led_race.so')
+target = ctypes.CDLL('./simulation.so')
 
 # Constants
 LEDS_SIDE = 100
@@ -63,7 +63,7 @@ try:
                 pygame.quit()
                 sys.exit()
 
-        led_race.led_race_loop(ledsArray)
+        target.render(ledsArray)
         draw_leds()
         time.sleep(0.01)  # Match the 10 ms update interval
 

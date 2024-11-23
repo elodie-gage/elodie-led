@@ -13,18 +13,25 @@ CRGB leds[NUM_LEDS];
 
 ulong lastUpdateMicros;
 
+PatternRenderer* activePatternRenderer;
+
 void setup() {
   Serial.begin(115200);
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 
+
   lastUpdateMicros = 0;
+
+  LedRace ledRace;
+
+  activePatternRenderer = &ledRace;
 }
 
 
 
 void loop() {
 
-  led_race_loop(leds);
+  activePatternRenderer->render(leds);
 
   FastLED.show();
 

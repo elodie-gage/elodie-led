@@ -1,12 +1,10 @@
-//#include <Arduino.h>
 #include "common_led.h"
 #include <FastLED.h>
 
-int offsetPattern;
-unsigned long lastUpdate = 0;
+static int offsetPattern;
+static unsigned long lastUpdate = 0;
 
-void led_race_loop(CRGB* leds) {
-
+void LedRace::render(CRGB* leds) {
   offsetPattern++;  // Increment the offset
   if (offsetPattern >= NUM_LEDS) {  // Wrap around
     offsetPattern = 0;
