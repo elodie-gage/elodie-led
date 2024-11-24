@@ -1,9 +1,10 @@
 #include "common_led.h"
 #include <FastLED.h>
 
-int increment = 0;
 
 void Rainbow::render(CRGB* leds) {
+  static int increment = 0;
+
   int saturation = 255;
   int value = 255;
 
