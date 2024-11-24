@@ -2,7 +2,7 @@
 #include "common_led.h"
 #include <FastLED.h>
 
-void Snowflakes::render(CRGB* leds) {
+void Snowflakes2::render(CRGB* leds) {
     static std::vector<int> snowflakesLeft;
     static std::vector<int> snowflakesRight;
     static const int sideLength = 214;

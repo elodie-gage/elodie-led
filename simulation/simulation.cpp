@@ -5,14 +5,15 @@
 LedRace ledRace;
 TestPattern testPattern;
 Rainbow rainbow;
-Snowflakes snowflakes;
+Snowflakes1 snowflakes1;
+Snowflakes2 snowflakes2;
 
 
 extern "C" void render(CRGB* leds) {
 
   PatternRenderer* patternRenderer; 
 
-  patternRenderer = &rainbow;
+  patternRenderer = &snowflakes2;
 
   patternRenderer->render(leds);
 }
