@@ -8,6 +8,12 @@ enum Side {
     Right
 };
 
+static const int sideLength = 214;
+
+bool inLedRange(int index) {
+    return index >= 0 && index < NUM_LEDS;
+}
+
 class Snowflake {
    private:
    uint16_t accuPos;
@@ -27,13 +33,34 @@ class Snowflake {
    int pos() const {
      return accuPos / 100;
    }
+
+   void draw(CRGB* leds) const {
+        int pos1 = accuPos / 100;
+        int pos2 = pos1+1;
+
+        uint8_t scale2 = (256 * (accuPos % 100)) / 100;
+        uint8_t scale1 = 256 - scale2;
+
+        int ledIndex1;
+        int ledIndex2;
+        switch(side) {
+            case Side::Left:  ledIndex1 = sideLength - 1 - pos(); ledIndex2=ledIndex1-1; break;
+            case Side::Right: ledIndex1 = sideLength + pos(); ledIndex2=ledIndex1+1; break;
+        };
+
+        if (inLedRange(ledIndex1)) {
+            leds[ledIndex1] = color.scale8(scale1);
+        }
+        if (inLedRange(ledIndex2)) {
+            leds[ledIndex2] = color.scale8(scale2);
+        }
+   }
+
 };
-
-
 
 void Snowflakes2::render(CRGB* leds) {
     static std::vector<Snowflake> snowflakes;
-    static const int sideLength = 214;
+    
 
     static const CRGB snowflakeColours[] = { 
         CRGB(255, 187, 0), 
@@ -48,10 +75,10 @@ void Snowflakes2::render(CRGB* leds) {
 
     int valP = 3;
     // Spawn new snowflakes
-    if (randValue % 100 < valP) { // P% chance to spawn a new snowflake
+    if (randValue % 1000 < valP) { // P% chance to spawn a new snowflake
         Side side = randValue % 2 == 0 ? Side::Left : Side::Right;
 
-        int speed = 20 + rand() % 20;
+        int speed = 1 + rand() % 3;
 
         CRGB colour = snowflakeColours[rand() % std::size(snowflakeColours)];
 
@@ -70,12 +97,6 @@ void Snowflakes2::render(CRGB* leds) {
 
     // Draw snowflakes
     for (const Snowflake& snowflake  : snowflakes) {
-        int ledIndex;
-        switch(snowflake.side) {
-            case Side::Left:  ledIndex = sideLength - 1 - snowflake.pos(); break;
-            case Side::Right: ledIndex = sideLength + snowflake.pos(); break;
-        }
-
-        leds[ledIndex] = snowflake.color;
+        snowflake.draw(leds);
     }
 }
