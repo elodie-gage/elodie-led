@@ -20,8 +20,8 @@ void Snowflakes::render(CRGB* leds) {
     }
 
     // Update snowflake positions
-    for (auto& pos : snowflakesLeft) pos++;
-    for (auto& pos : snowflakesRight) pos++;
+    for (int& pos : snowflakesLeft) pos++;
+    for (int& pos : snowflakesRight) pos++;
 
     // Remove snowflakes that have reached the bottom
     snowflakesLeft.erase(
