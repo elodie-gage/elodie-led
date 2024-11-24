@@ -40,12 +40,14 @@ void Snowflakes2::render(CRGB* leds) {
 
     int randValue = rand();
 
-    int valP = 2;
+    int valP = 3;
     // Spawn new snowflakes
     if (randValue % 100 < valP) { // P% chance to spawn a new snowflake
         Side side = randValue % 2 == 0 ? Side::Left : Side::Right;
 
-        snowflakes.emplace_back(0, 100, CRGB::White, side);
+        int speed = 20 + rand() % 20;
+
+        snowflakes.emplace_back(0, speed, CRGB::White, side);
     }
 
     // Update snowflake positions
