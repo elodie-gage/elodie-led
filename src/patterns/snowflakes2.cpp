@@ -35,7 +35,11 @@ void Snowflakes2::render(CRGB* leds) {
     static std::vector<Snowflake> snowflakes;
     static const int sideLength = 214;
 
-    static const CRGB snowflakeColours[] = { CRGB(255, 187, 0), CRGB(255, 225, 141), CRGB::White};
+    static const CRGB snowflakeColours[] = { 
+        CRGB(255, 187, 0), 
+        CRGB(255, 225, 141), 
+        CRGB::White
+    };
 
     // Clear LEDs
     fill_solid(leds, NUM_LEDS, CRGB::Black);
