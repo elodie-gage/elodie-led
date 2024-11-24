@@ -1,7 +1,7 @@
 #include <vector>
 #include "common_led.h"
 #include <FastLED.h>
-
+#include <iterator>
 
 enum Side {
     Left,
@@ -35,6 +35,8 @@ void Snowflakes2::render(CRGB* leds) {
     static std::vector<Snowflake> snowflakes;
     static const int sideLength = 214;
 
+    static const CRGB snowflakeColours[] = { CRGB(255, 187, 0), CRGB(255, 225, 141), CRGB::White};
+
     // Clear LEDs
     fill_solid(leds, NUM_LEDS, CRGB::Black);
 
@@ -47,7 +49,9 @@ void Snowflakes2::render(CRGB* leds) {
 
         int speed = 20 + rand() % 20;
 
-        snowflakes.emplace_back(0, speed, CRGB::White, side);
+        CRGB colour = snowflakeColours[rand() % std::size(snowflakeColours)];
+
+        snowflakes.emplace_back(0, speed, colour, side);
     }
 
     // Update snowflake positions
