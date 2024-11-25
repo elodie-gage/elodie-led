@@ -1,13 +1,15 @@
+#define FASTLED_OVERCLOCK 1.2
+
 #include <FastLED.h>
 #include "common_led.h"
 #include <limits.h>
 
 #define DATA_PIN 23
 
-#define INTERVAL_MICROS 10000
+#define INTERVAL_MICROS 20000
 
 #define STATS_EVERY 1000
-
+//#define PRINT_STATS 1
 
 typedef unsigned long ulong;
 
@@ -56,7 +58,7 @@ void loop() {
   ulong showElapsed = elapsedMicros(lastUpdateMicros) - renderElapsed; 
   totalShowElapsed += showElapsed;
 
-  // Wait for 10ms (10,000us)
+  // Wait for INTERVAL_MICROS
   ulong totaElapsed;
   do {
     totaElapsed = elapsedMicros(lastUpdateMicros); 
@@ -65,6 +67,7 @@ void loop() {
 
   if (loopCount++ > STATS_EVERY) {
 
+    #ifdef PRINT_STATS
     ulong averageRenderElapsed = totalRenderElapsed / loopCount;
     ulong averageShowElapsed = totalShowElapsed / loopCount;
 
@@ -73,6 +76,7 @@ void loop() {
     Serial.print("us. Avg show ");
     Serial.print(averageShowElapsed);
     Serial.println("us");
+    #endif
 
     totalShowElapsed = 0;
     totalRenderElapsed = 0;
