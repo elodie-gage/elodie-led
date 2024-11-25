@@ -6,6 +6,8 @@
 
 #define INTERVAL_MICROS 10000
 
+#define STATS_EVERY 1000
+
 
 typedef unsigned long ulong;
 
@@ -42,14 +44,39 @@ ulong elapsedMicros(ulong since) {
 
 void loop() {
 
+  static ulong totalRenderElapsed = 0;
+  static ulong totalShowElapsed = 0;
+  static int loopCount = 0;
+
   activePatternRenderer->render(leds);
+  ulong renderElapsed = elapsedMicros(lastUpdateMicros); 
+  totalRenderElapsed += renderElapsed;
+
   FastLED.show();
+  ulong showElapsed = elapsedMicros(lastUpdateMicros) - renderElapsed; 
+  totalShowElapsed += showElapsed;
 
   // Wait for 10ms (10,000us)
-  ulong elapsed;
+  ulong totaElapsed;
   do {
-    elapsed = elapsedMicros(lastUpdateMicros); 
-  } while (elapsed < INTERVAL_MICROS);
+    totaElapsed = elapsedMicros(lastUpdateMicros); 
+  } while (totaElapsed < INTERVAL_MICROS);
   lastUpdateMicros = micros();
+
+  if (loopCount++ > STATS_EVERY) {
+
+    ulong averageRenderElapsed = totalRenderElapsed / loopCount;
+    ulong averageShowElapsed = totalShowElapsed / loopCount;
+
+    Serial.print("Avg render ");
+    Serial.print(averageRenderElapsed);
+    Serial.print("us. Avg show ");
+    Serial.print(averageShowElapsed);
+    Serial.println("us");
+
+    totalShowElapsed = 0;
+    totalRenderElapsed = 0;
+    loopCount = 0;
+  }
 }
 
