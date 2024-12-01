@@ -35,3 +35,8 @@ class Snowflakes2: public PatternRenderer  {
    public:
       void render(CRGB* leds) override;
 };
+
+class TestPattern2: public PatternRenderer  {
+   public:
+      void render(CRGB* leds) override;
+};

@@ -67,7 +67,7 @@ try:
 
         target.render(ledsArray)
         draw_leds()
-        time.sleep(0.01)  # Match the 10 ms update interval
+        time.sleep(0.02)  # Match the 20 ms update interval
 
 except KeyboardInterrupt:
     pygame.quit()

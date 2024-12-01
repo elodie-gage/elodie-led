@@ -7,13 +7,14 @@ TestPattern testPattern;
 Rainbow rainbow;
 Snowflakes1 snowflakes1;
 Snowflakes2 snowflakes2;
+TestPattern2 testPattern2;
 
 
 extern "C" void render(CRGB* leds) {
 
   PatternRenderer* patternRenderer; 
 
-  patternRenderer = &snowflakes2;
+  patternRenderer = &testPattern2;
 
   patternRenderer->render(leds);
 }
