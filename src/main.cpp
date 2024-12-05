@@ -4,7 +4,7 @@
 #include "common_led.h"
 #include <limits.h>
 
-#define DATA_PIN 23
+#define DATA_PIN 4
 
 #define INTERVAL_MICROS 20000
 
