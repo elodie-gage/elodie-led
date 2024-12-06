@@ -4,8 +4,6 @@
 #include "common_led.h"
 #include <limits.h>
 
-#define DATA_PIN 4
-
 #define INTERVAL_MICROS 20000
 
 #define STATS_EVERY 1000
@@ -20,18 +18,23 @@ ulong lastSerialUpdateMicros;
 
 LedRace ledRace;
 TestPattern testPattern;
+TestPattern2 testPattern2;
 Rainbow rainbow;
 Snowflakes2 snowflake2;
+Twinkles twinkles;
 
 PatternRenderer* activePatternRenderer;
 
 void setup() {
   Serial.begin(115200);
-  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+  FastLED.addLeds<NEOPIXEL, D4>(leds, NUM_LEDS);
 
   lastUpdateMicros = 0;
 
-  activePatternRenderer = &snowflake2;
+  activePatternRenderer = &twinkles;
+
+  delay(1000);
+  Serial.println("LED control running...");
 }
 
 ulong elapsedMicros(ulong since) {

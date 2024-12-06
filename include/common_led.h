@@ -40,3 +40,8 @@ class TestPattern2: public PatternRenderer  {
    public:
       void render(CRGB* leds) override;
 };
+
+class Twinkles: public PatternRenderer  {
+   public:
+      void render(CRGB* leds) override;
+};

@@ -8,13 +8,14 @@ Rainbow rainbow;
 Snowflakes1 snowflakes1;
 Snowflakes2 snowflakes2;
 TestPattern2 testPattern2;
+Twinkles twinkles;
 
 
 extern "C" void render(CRGB* leds) {
 
   PatternRenderer* patternRenderer; 
 
-  patternRenderer = &testPattern2;
+  patternRenderer = &twinkles;
 
   patternRenderer->render(leds);
 }
