@@ -7,24 +7,26 @@ class Twinkle {
     private:
     int pos;
     CRGB color;
-    int fadeFactor;
+    int seq;
 
     public:  
     Twinkle(int pos, CRGB color) : pos(pos), color(color) {
-        fadeFactor = 255;
+        seq = 0;
     }
 
 
     void update() {
-        fadeFactor -= 12;
+        seq+=2;
     }
 
     bool isDead() {
-        return fadeFactor <= 0;
+        return seq >= 500;
     }
 
 
     void draw(CRGB* leds) const {
+        int fadeFactor = seq < 250 ? seq : 500 - seq; 
+
         leds[pos] = color.scale8(fadeFactor);
     }
 };
@@ -44,7 +46,7 @@ void Twinkles::render(CRGB* leds) {
 
     int randValue = rand();
 
-    int valP = 200;
+    int valP = 80;
     // Spawn new twinkle
     if (randValue % 1000 < valP) {
         CRGB colour = colours[rand() % std::size(colours)];
