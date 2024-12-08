@@ -4,42 +4,66 @@
 #include <iterator>
 
 class Twinkle {
+
     private:
+
     int pos;
     CRGB color;
     int seq;
+    int scaleUpRate;
+    int scaleDownRate;
+    int scaleDownFromSeq;
+    int deathSeq;
 
     public:  
-    Twinkle(int pos, CRGB color) : pos(pos), color(color) {
+
+    Twinkle(int randValue) {
         seq = 0;
+
+        pos = randValue % NUM_LEDS;
+
+        int colorChoice = randValue % 10;
+        
+        if (colorChoice < 7) {
+            color = CRGB(255, 255, 255);  // white
+            scaleUpRate = 5;
+            scaleDownRate = 5;
+        } else if (colorChoice < 8) {
+            color = CRGB(255, 0, 0); // redish
+            scaleUpRate = 10;
+            scaleDownRate = 10;
+        } else {
+            color = CRGB(245, 239, 66); // gold
+            scaleUpRate = 2;
+            scaleDownRate = 2;
+        }
+
+        scaleDownFromSeq = 255 / scaleUpRate;
+        deathSeq = scaleDownFromSeq + (scaleUpRate * scaleDownFromSeq) / scaleDownRate;
     }
 
-
     void update() {
-        seq+=2;
+        seq++;
     }
 
     bool isDead() {
-        return seq >= 500;
+        return seq >= deathSeq;
     }
 
-
     void draw(CRGB* leds) const {
-        int fadeFactor = seq < 250 ? seq : 500 - seq; 
+        int fadeFactor = seq < scaleDownFromSeq 
+            ? seq * scaleUpRate 
+            : (scaleDownFromSeq * scaleUpRate) - ((seq - scaleDownFromSeq) * scaleDownRate);
 
-        leds[pos] = color.scale8(fadeFactor);
+        if (fadeFactor > 0) {
+            leds[pos] = color.scale8(fadeFactor);
+        }
     }
 };
 
 void Twinkles::render(CRGB* leds) {
     static std::vector<Twinkle> twinkles;
     
-
-    static const CRGB colours[] = { 
-        CRGB(255, 250, 221), 
-        CRGB(157, 152, 127), 
-        CRGB(83, 81, 64) 
-    };
 
     // Clear LEDs
     fill_solid(leds, NUM_LEDS, CRGB::Black);
@@ -49,11 +73,8 @@ void Twinkles::render(CRGB* leds) {
     int valP = 80;
     // Spawn new twinkle
     if (randValue % 1000 < valP) {
-        CRGB colour = colours[rand() % std::size(colours)];
 
-        int pos = randValue % NUM_LEDS;
-
-        twinkles.emplace_back(pos, colour);
+        twinkles.emplace_back(randValue);
     }
 
     for (Twinkle& twinkle : twinkles) twinkle.update();
