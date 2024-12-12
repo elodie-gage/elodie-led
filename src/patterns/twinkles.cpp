@@ -14,32 +14,36 @@ class Twinkle {
     int scaleDownRate;
     int scaleDownFromSeq;
     int deathSeq;
+    bool isRainbow;
+    
 
     public:  
 
     Twinkle(int randValue) {
         seq = 0;
-
+        
         pos = randValue % NUM_LEDS;
 
-        int colorChoice = randValue % 10;
+        int colorChoice = randValue % 1000;
         
-        if (colorChoice < 7) {
+        isRainbow = false;
+        if (colorChoice < 800) {
             color = CRGB(255, 255, 255);  // white
             scaleUpRate = 5;
-            scaleDownRate = 5;
-        } else if (colorChoice < 8) {
-            color = CRGB(255, 0, 0); // redish
-            scaleUpRate = 10;
-            scaleDownRate = 10;
-        } else {
+            scaleDownRate = 5;    
+        } else if (colorChoice < 970) {
             color = CRGB(245, 239, 66); // gold
             scaleUpRate = 2;
             scaleDownRate = 2;
+        } else {
+            isRainbow = true;
+            deathSeq = 220;
         }
 
-        scaleDownFromSeq = 255 / scaleUpRate;
-        deathSeq = scaleDownFromSeq + (scaleUpRate * scaleDownFromSeq) / scaleDownRate;
+        if (!isRainbow) {
+            scaleDownFromSeq = 255 / scaleUpRate;
+            deathSeq = scaleDownFromSeq + (scaleUpRate * scaleDownFromSeq) / scaleDownRate;
+        }
     }
 
     void update() {
@@ -51,12 +55,18 @@ class Twinkle {
     }
 
     void draw(CRGB* leds) const {
-        int fadeFactor = seq < scaleDownFromSeq 
-            ? seq * scaleUpRate 
-            : (scaleDownFromSeq * scaleUpRate) - ((seq - scaleDownFromSeq) * scaleDownRate);
+        if (isRainbow) {
+            uint8_t hue = seq;
+            leds[pos].setHSV(hue, 255, 255);
+        } else {
+            int fadeFactor = seq < scaleDownFromSeq 
+                ? seq * scaleUpRate 
+                : (scaleDownFromSeq * scaleUpRate) - ((seq - scaleDownFromSeq) * scaleDownRate);
 
-        if (fadeFactor > 0) {
-            leds[pos] = color.scale8(fadeFactor);
+            if (fadeFactor > 0) {
+                leds[pos] = color.scale8(fadeFactor);
+            }
+
         }
     }
 };
@@ -70,9 +80,9 @@ void Twinkles::render(CRGB* leds) {
 
     int randValue = rand();
 
-    int valP = 80;
+    int valP = 2;
     // Spawn new twinkle
-    if (randValue % 1000 < valP) {
+    if (randValue % 25 < valP) {
 
         twinkles.emplace_back(randValue);
     }
