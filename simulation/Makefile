@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := compile
 
-PROJ=/Users/tim/code/platformio-play/play1
+PROJ=$(dir $(realpath $(lastword $(MAKEFILE_LIST))))..
 
 compile:
 	g++ -std=c++17 -shared -fPIC \

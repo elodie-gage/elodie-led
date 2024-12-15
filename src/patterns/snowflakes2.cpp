@@ -63,9 +63,9 @@ void Snowflakes2::render(CRGB* leds) {
     
 
     static const CRGB snowflakeColours[] = { 
-        CRGB(255, 207, 0),
-        CRGB(255, 247, 21),
-        CRGB(255, 205, 67),
+        CRGB(182, 129, 37), // 
+        // CRGB(255, 247, 21),
+        //CRGB(158, 32, 0),
         CRGB(255, 255, 230)
     };
 
