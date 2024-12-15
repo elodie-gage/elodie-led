@@ -31,7 +31,7 @@ void setup() {
 
   lastUpdateMicros = 0;
 
-  activePatternRenderer = &twinkles;
+  activePatternRenderer = &snowflake2;
 
   delay(1000);
   Serial.println("LED control running...");

@@ -63,9 +63,10 @@ void Snowflakes2::render(CRGB* leds) {
     
 
     static const CRGB snowflakeColours[] = { 
-        CRGB(255, 250, 221), 
-        CRGB(157, 152, 127), 
-        CRGB(83, 81, 64) 
+        CRGB(255, 207, 0),
+        CRGB(255, 247, 21),
+        CRGB(255, 205, 67),
+        CRGB(255, 255, 230)
     };
 
     // Clear LEDs
@@ -78,7 +79,7 @@ void Snowflakes2::render(CRGB* leds) {
     if (randValue % 1000 < valP) { // P% chance to spawn a new snowflake
         Side side = randValue % 2 == 0 ? Side::Left : Side::Right;
 
-        int speed = 10 + rand() % 8;
+        int speed = 12 + rand() % 12;
 
         CRGB colour = snowflakeColours[rand() % std::size(snowflakeColours)];
 

@@ -15,7 +15,7 @@ extern "C" void render(CRGB* leds) {
 
   PatternRenderer* patternRenderer; 
 
-  patternRenderer = &twinkles;
+  patternRenderer = &snowflakes2;
 
   patternRenderer->render(leds);
 }
