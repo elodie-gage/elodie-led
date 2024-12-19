@@ -1,3 +1,3 @@
 
 
-void connectToMqtt();
+void start();

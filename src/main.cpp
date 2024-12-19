@@ -4,10 +4,7 @@
 #include "common_led.h"
 #include <limits.h>
 #include <arduino.h>
-#include <WiFi.h>
-#include "secrets.h"
 #include "mqtt.h"
-
 
 #define INTERVAL_MICROS 20000
 
@@ -31,27 +28,17 @@ Twinkles twinkles;
 PatternRenderer* activePatternRenderer;
 
 
-
-void connectToWifi() {
-  Serial.println("Connecting to Wi-Fi...");
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  Serial.println("Connected");
-}
-
-
-
 void setup() {
   delay(500);
   
   Serial.begin(115200);
-  delay(500);
+  delay(1000);
   Serial.println("Starting...");
 
 
   FastLED.addLeds<NEOPIXEL, D4>(leds, NUM_LEDS);
 
-  connectToWifi();
-  connectToMqtt();
+  start();
 
   lastUpdateMicros = 0;
 

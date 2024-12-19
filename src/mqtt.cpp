@@ -1,6 +1,8 @@
 #include "secrets.h"
 #include <arduino.h>
+#include <WiFi.h>
 #include <AsyncMqttClient.h>
+
 
 #define QOS_1_AT_LEAST_ONCE 1
 #define RETAIN true
@@ -23,6 +25,10 @@ const char * configuration_payload = R"END(
 )END"; 
 
 AsyncMqttClient mqttClient;
+TimerHandle_t mqttReconnectTimer;
+TimerHandle_t wifiReconnectTimer;
+
+void connectToMqtt();
 
 void sendConfigurationMessage() {
   mqttClient.publish("homeassistant/select/porch_lights_mode/config", QOS_1_AT_LEAST_ONCE, RETAIN, configuration_payload);
@@ -37,32 +43,116 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("Subscribe packet ID: ");
   Serial.println(packetIdSub);
 
-
   sendConfigurationMessage();
   Serial.println("Configured");
 }
 
+void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
+  Serial.print("Disconnected from MQTT broker: ");
+  switch (reason) {
+    case AsyncMqttClientDisconnectReason::TCP_DISCONNECTED:
+      Serial.println("TCP disconnected.");
+      break;
+    case AsyncMqttClientDisconnectReason::MQTT_UNACCEPTABLE_PROTOCOL_VERSION:
+      Serial.println("Unacceptable protocol version.");
+      break;
+    case AsyncMqttClientDisconnectReason::MQTT_IDENTIFIER_REJECTED:
+      Serial.println("Identifier rejected.");
+      break;
+    case AsyncMqttClientDisconnectReason::MQTT_SERVER_UNAVAILABLE:
+      Serial.println("Server unavailable.");
+      break;
+    case AsyncMqttClientDisconnectReason::MQTT_MALFORMED_CREDENTIALS:
+      Serial.println("Malformed credentials.");
+      break;
+    case AsyncMqttClientDisconnectReason::MQTT_NOT_AUTHORIZED:
+      Serial.println("Not authorized.");
+      break;
+    default:
+      Serial.println("Unknown reason.");
+  }
+  if (WiFi.isConnected()) {
+    xTimerStop(mqttReconnectTimer, 0); // Reset
+    xTimerStart(mqttReconnectTimer, 0);
+  }
+}
+
+void onWifiEvent(WiFiEvent_t event) {
+  switch (event) {
+    case SYSTEM_EVENT_STA_GOT_IP:
+      Serial.print("Connected to WiFi. IP address: ");
+      Serial.println(WiFi.localIP());
+      connectToMqtt();
+      break;
+    case SYSTEM_EVENT_STA_DISCONNECTED:
+      Serial.println("Disconnected from Wi-Fi.");
+      xTimerStop(mqttReconnectTimer, 0); // Ensure MQTT reconnect timer is stopped
+      xTimerStart(wifiReconnectTimer, 0);
+      break;
+    default:
+      Serial.println("Unknown wifi event");
+      break;
+  }
+}
+
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
   Serial.println("Publish received.");
+  Serial.print("  topic: ");
+  Serial.println(topic);
+  Serial.print("  qos: ");
+  Serial.println(properties.qos);
+  Serial.print("  dup: ");
+  Serial.println(properties.dup);
+  Serial.print("  retain: ");
+  Serial.println(properties.retain);
+  Serial.print("  len: ");
+  Serial.println(len);
+  Serial.print("  index: ");
+  Serial.println(index);
+  Serial.print("  total: ");
+  Serial.println(total);
+  Serial.println(payload);
+
+
   if (len >= BUFFER_LEN) {
     Serial.println("Payload too big!");
     return;
   } 
-  
-  memcpy(payload, buffer, len);
+  for (size_t i = 0; i < len; ++i) {
+      buffer[i] = payload[i];
+  }
   buffer[len] = 0;
+
+  
   Serial.print("Message: [");
   Serial.print(buffer);
   Serial.println("]");
 }
 
 void connectToMqtt() {
+  Serial.println("Connecting to MQTT...");
+  mqttClient.connect();
+}
+
+void start() {
+  Serial.println("Connecting...");
+  mqttReconnectTimer = xTimerCreate("mqttTimer", pdMS_TO_TICKS(2000), pdFALSE, (void*)0, [](TimerHandle_t xTimer) {
+    connectToMqtt();
+  });
+
+  wifiReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(2000), pdFALSE, (void*)0, [](TimerHandle_t xTimer) {
+    Serial.println("Starting wifi...");
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  });
+
+  WiFi.onEvent(onWifiEvent); 
+  
+  mqttClient.setServer(MQTT_HOST, MQTT_PORT);
+  mqttClient.setCredentials(MQTT_USER, MQTT_PASSWORD);
   mqttClient.onConnect(onMqttConnect);
+  mqttClient.onDisconnect(onMqttDisconnect);
   mqttClient.onMessage(onMqttMessage);
 
-  Serial.println("Connecting to MQTT...");
-  mqttClient.setServer(MQTT_HOST, MQTT_PORT);
-  mqttClient.connect();
-  Serial.println("Connected");
 
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 }
