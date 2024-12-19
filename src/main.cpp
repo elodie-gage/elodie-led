@@ -41,8 +41,10 @@ void connectToWifi() {
 
 
 void setup() {
+  delay(500);
+  
   Serial.begin(115200);
-  delay(1000);
+  delay(500);
   Serial.println("Starting...");
 
 
