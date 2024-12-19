@@ -2,6 +2,8 @@
 #include <arduino.h>
 #include <WiFi.h>
 #include <AsyncMqttClient.h>
+#include <iostream>
+#include <functional>
 
 
 #define QOS_1_AT_LEAST_ONCE 1
@@ -13,7 +15,7 @@ const char * configuration_payload = R"END(
   "name": "Porch Lights Mode",
   "command_topic": "homeassistant/select/porch_lights_mode/set",
   "state_topic": "homeassistant/select/porch_lights_mode/state",
-  "options": ["Option 1", "Option 2", "Option 3"],
+  "options": ["Snowflakes2", "Rainbow", "Twinkles"],
   "unique_id": "porch_lights_mode",
   "device": {
     "identifiers": ["porch_lights_001"],
@@ -27,6 +29,8 @@ const char * configuration_payload = R"END(
 AsyncMqttClient mqttClient;
 TimerHandle_t mqttReconnectTimer;
 TimerHandle_t wifiReconnectTimer;
+
+std::function<void(std::string)> onOptionChange;
 
 void connectToMqtt();
 
@@ -96,24 +100,6 @@ void onWifiEvent(WiFiEvent_t event) {
 }
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
-  Serial.println("Publish received.");
-  Serial.print("  topic: ");
-  Serial.println(topic);
-  Serial.print("  qos: ");
-  Serial.println(properties.qos);
-  Serial.print("  dup: ");
-  Serial.println(properties.dup);
-  Serial.print("  retain: ");
-  Serial.println(properties.retain);
-  Serial.print("  len: ");
-  Serial.println(len);
-  Serial.print("  index: ");
-  Serial.println(index);
-  Serial.print("  total: ");
-  Serial.println(total);
-  Serial.println(payload);
-
-
   if (len >= BUFFER_LEN) {
     Serial.println("Payload too big!");
     return;
@@ -123,10 +109,15 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   }
   buffer[len] = 0;
 
+  std::string str(buffer);
   
   Serial.print("Message: [");
   Serial.print(buffer);
   Serial.println("]");
+
+  onOptionChange(str);
+
+  mqttClient.publish("homeassistant/select/porch_lights_mode/state", QOS_1_AT_LEAST_ONCE, RETAIN, buffer);
 }
 
 void connectToMqtt() {
@@ -134,7 +125,9 @@ void connectToMqtt() {
   mqttClient.connect();
 }
 
-void start() {
+void start(std::function<void(std::string)> callback) {
+  onOptionChange = callback;
+
   Serial.println("Connecting...");
   mqttReconnectTimer = xTimerCreate("mqttTimer", pdMS_TO_TICKS(2000), pdFALSE, (void*)0, [](TimerHandle_t xTimer) {
     connectToMqtt();
@@ -152,7 +145,6 @@ void start() {
   mqttClient.onConnect(onMqttConnect);
   mqttClient.onDisconnect(onMqttDisconnect);
   mqttClient.onMessage(onMqttMessage);
-
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 }

@@ -1,3 +1,3 @@
 
 
-void start();
+void start(std::function<void(std::string)> callback);

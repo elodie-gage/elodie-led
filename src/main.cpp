@@ -27,6 +27,18 @@ Twinkles twinkles;
 
 PatternRenderer* activePatternRenderer;
 
+void onOptionChange(std::string option) {
+  if (option.find("Snowflakes2") != std::string::npos) {
+    activePatternRenderer = &snowflake2;
+  } else if (option.find("Rainbow") != std::string::npos) {
+    activePatternRenderer = &rainbow;
+  } else if (option.find("Twinkles") != std::string::npos) {
+    activePatternRenderer = &twinkles;
+  } else {
+    Serial.println("Unknown pattern");
+    activePatternRenderer = &ledRace;
+  }
+}
 
 void setup() {
   delay(500);
@@ -35,10 +47,9 @@ void setup() {
   delay(1000);
   Serial.println("Starting...");
 
-
   FastLED.addLeds<NEOPIXEL, D4>(leds, NUM_LEDS);
 
-  start();
+  start(onOptionChange);
 
   lastUpdateMicros = 0;
 
