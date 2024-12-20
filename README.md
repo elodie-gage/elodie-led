@@ -15,6 +15,7 @@ The LEDS are arranged in roughly this shape:
   o       o
   o       o
 ```
+There are 132 LEDs on each vertical side and 82 on each sloped section. This comes to 428 in total.
 
 # Patterns
 
