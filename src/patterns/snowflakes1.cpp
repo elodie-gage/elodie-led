@@ -1,6 +1,7 @@
 #include <vector>
 #include "common_led.h"
 #include <FastLED.h>
+#include <algorithm>
 
 void Snowflakes1::render(CRGB* leds) {
     static std::vector<int> snowflakesLeft;
