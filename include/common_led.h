@@ -1,4 +1,4 @@
-
+#include <memory>
 #include <FastLED.h>
 #define NUM_LEDS 428
 // 214 on each side plus slope
@@ -43,5 +43,14 @@ class TestPattern2: public PatternRenderer  {
 
 class Twinkles: public PatternRenderer  {
    public:
+      void render(CRGB* leds) override;
+};
+
+class Wolfram135: public PatternRenderer {
+      class Impl;
+      Impl *impl;
+   public:
+      Wolfram135();
+      ~Wolfram135();
       void render(CRGB* leds) override;
 };
