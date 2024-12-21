@@ -2,6 +2,7 @@
 #include "common_led.h"
 #include <FastLED.h>
 #include <iterator>
+#include <algorithm>
 
 enum Side {
     Left,
