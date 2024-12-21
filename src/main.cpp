@@ -24,6 +24,7 @@ TestPattern2 testPattern2;
 Rainbow rainbow;
 Snowflakes2 snowflake2;
 Twinkles twinkles;
+Wolfram135 wolfram135;
 
 PatternRenderer* activePatternRenderer;
 
@@ -33,6 +34,8 @@ void onOptionChange(std::string option) {
   } else if (option.find("Rainbow") != std::string::npos) {
     activePatternRenderer = &rainbow;
   } else if (option.find("Twinkles") != std::string::npos) {
+    activePatternRenderer = &twinkles;
+  } else if (option.find("Wolfram135") != std::string::npos) {
     activePatternRenderer = &twinkles;
   } else {
     Serial.println("Unknown pattern");

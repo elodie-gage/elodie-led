@@ -15,7 +15,7 @@ const char * configuration_payload = R"END(
   "name": "Porch Lights Mode",
   "command_topic": "homeassistant/select/porch_lights_mode/set",
   "state_topic": "homeassistant/select/porch_lights_mode/state",
-  "options": ["Snowflakes2", "Rainbow", "Twinkles"],
+  "options": ["Snowflakes2", "Rainbow", "Twinkles", "Wolfram135"],
   "unique_id": "porch_lights_mode",
   "device": {
     "identifiers": ["porch_lights_001"],

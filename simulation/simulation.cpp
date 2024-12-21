@@ -16,7 +16,7 @@ extern "C" void render(CRGB* leds) {
 
   PatternRenderer* patternRenderer; 
 
-  patternRenderer = &wolfram135;
+  patternRenderer = &testPattern;
 
   patternRenderer->render(leds);
 }
