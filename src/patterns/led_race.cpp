@@ -1,6 +1,5 @@
 #include "common_led.h"
-#include <FastLED.h>
-
+#include <crgb.h>
 
 void LedRace::render(CRGB* leds) {
   static int offsetPattern;

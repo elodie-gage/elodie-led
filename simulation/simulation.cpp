@@ -1,4 +1,4 @@
-#include <FastLED.h>
+#include <crgb.h>
 #include "simulation.h"
 #include "common_led.h"
 
@@ -18,8 +18,4 @@ extern "C" void render(CRGB* leds) {
   patternRenderer = &snowflakes2;
 
   patternRenderer->render(leds);
-}
-
-uint16_t XY(uint8_t x, uint8_t y) {
-    return 0;
 }

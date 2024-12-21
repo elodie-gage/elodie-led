@@ -1,5 +1,5 @@
 #include "common_led.h"
-#include <FastLED.h>
+#include <crgb.h>
 
 void TestPattern::render(CRGB* leds) {
   for (int i = 0; i < NUM_LEDS; i++) {

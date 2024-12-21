@@ -1,6 +1,6 @@
 #include <vector>
 #include "common_led.h"
-#include <FastLED.h>
+#include <crgb.h>
 #include <iterator>
 #include <algorithm>
 

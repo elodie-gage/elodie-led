@@ -1,5 +1,5 @@
 #include "common_led.h"
-#include <FastLED.h>
+#include <crgb.h>
 
 
 void Rainbow::render(CRGB* leds) {

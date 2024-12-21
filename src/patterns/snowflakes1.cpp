@@ -1,6 +1,6 @@
 #include <vector>
 #include "common_led.h"
-#include <FastLED.h>
+#include <crgb.h>
 #include <algorithm>
 
 void Snowflakes1::render(CRGB* leds) {
