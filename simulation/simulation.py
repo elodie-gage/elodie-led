@@ -1,15 +1,24 @@
+import argparse
 import ctypes
 import pygame
 import time
 import sys
 
+parser = argparse.ArgumentParser(
+    description="Simulate the porch LEDs in a pygame window")
+parser.add_argument("--library", default="./simulation.so",
+                    help="Path to the simulation.so library to load")
+parser.add_argument("--led-size", type=int, default=4,
+                    help="Size of an LED in the simulation")
+args = parser.parse_args()
+
 # Load the compiled C library
-target = ctypes.CDLL('./simulation.so')
+target = ctypes.CDLL(args.library)
 
 # Constants
 LEDS_SIDE = 132
 LEDS_ARCH = 82
-LED_SIZE = 4
+LED_SIZE = args.led_size
 SPACING = 0
 R2O2 = 0.70710678
 NUM_LEDS = LEDS_SIDE * 2 + LEDS_ARCH * 2
