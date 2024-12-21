@@ -36,7 +36,7 @@ void onOptionChange(std::string option) {
   } else if (option.find("Twinkles") != std::string::npos) {
     activePatternRenderer = &twinkles;
   } else if (option.find("Wolfram135") != std::string::npos) {
-    activePatternRenderer = &twinkles;
+    activePatternRenderer = &wolfram135;
   } else {
     Serial.println("Unknown pattern");
     activePatternRenderer = &ledRace;
