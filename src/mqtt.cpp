@@ -51,9 +51,9 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("Session present: ");
   Serial.println(sessionPresent);
 
-  uint16_t packetIdSub = mqttClient.subscribe("homeassistant/select/porch_lights_mode/set", QOS_1_AT_LEAST_ONCE);
-  Serial.print("Subscribe packet ID: ");
-  Serial.println(packetIdSub);
+  mqttClient.subscribe("homeassistant/select/porch_lights_mode/set", QOS_1_AT_LEAST_ONCE);
+  mqttClient.subscribe("homeassistant/select/porch_lights_mode/state", QOS_1_AT_LEAST_ONCE);
+  Serial.println("Subscribed");
 
   sendConfigurationMessage();
   Serial.println("Configured");
@@ -110,6 +110,18 @@ void onWifiEvent(WiFiEvent_t event) {
   }
 }
 
+void setMessage(std::string message) {
+  onOptionChange(message);
+
+  mqttClient.publish("homeassistant/select/porch_lights_mode/state", QOS_1_AT_LEAST_ONCE, RETAIN, message.c_str());
+}
+
+void stateMessage(std::string message) {
+  // Just read the existing state
+  onOptionChange(message);
+}
+
+
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
   if (len >= BUFFER_LEN) {
     Serial.println("Payload too big!");
@@ -119,16 +131,23 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
       buffer[i] = payload[i];
   }
   buffer[len] = 0;
-
-  std::string str(buffer);
   
-  Serial.print("Message: [");
+  Serial.print("Topic: [");
+  Serial.print(topic);
+  Serial.print("] Message: [");
   Serial.print(buffer);
   Serial.println("]");
 
-  onOptionChange(str);
-
-  mqttClient.publish("homeassistant/select/porch_lights_mode/state", QOS_1_AT_LEAST_ONCE, RETAIN, buffer);
+  std::string topic_string(topic);
+  std::string message(buffer);
+  if (topic_string.find("porch_lights_mode/set") != std::string::npos) {
+    setMessage(message);
+  } else if (topic_string.find("porch_lights_mode/state") != std::string::npos) {
+    stateMessage(message);
+  } else {
+    Serial.print("Unknown topic: ");
+    Serial.println(topic);
+  }
 }
 
 void setupOTA() {

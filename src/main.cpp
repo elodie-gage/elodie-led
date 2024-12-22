@@ -55,7 +55,7 @@ void setup() {
 
   lastUpdateMicros = 0;
 
-  activePatternRenderer = &instance_of_Snowflakes2;
+  activePatternRenderer = &instance_of_LedRace;
   Serial.println("LED control running...");
 }
 
