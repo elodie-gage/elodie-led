@@ -18,30 +18,28 @@ CRGB leds[NUM_LEDS];
 ulong lastUpdateMicros;
 ulong lastSerialUpdateMicros;
 
-LedRace ledRace;
-TestPattern testPattern;
-TestPattern2 testPattern2;
-Rainbow rainbow;
-Snowflakes2 snowflake2;
-Twinkles twinkles;
-Wolfram135 wolfram135;
+// Define an instance of each pattern class
+#define MAKE_INSTANCE(classname) classname instance_of_##classname
+ALL_PATTERNS(MAKE_INSTANCE, ;);
+#undef MAKE_INSTANCE
 
 PatternRenderer* activePatternRenderer;
 
-void onOptionChange(std::string option) {
-  if (option.find("Snowflakes2") != std::string::npos) {
-    activePatternRenderer = &snowflake2;
-  } else if (option.find("Rainbow") != std::string::npos) {
-    activePatternRenderer = &rainbow;
-  } else if (option.find("Twinkles") != std::string::npos) {
-    activePatternRenderer = &twinkles;
-  } else if (option.find("Wolfram135") != std::string::npos) {
-    activePatternRenderer = &wolfram135;
-  } else {
-    Serial.println("Unknown pattern");
-    activePatternRenderer = &ledRace;
+#define CHECK_STRING(classname)                         \
+  if (option.find(#classname) != std::string::npos) {   \
+    activePatternRenderer = &instance_of_##classname;   \
+    return;                                             \
   }
+
+void onOptionChange(std::string option) {
+  // Translate each pattern name as a string into the instance of the class
+  ALL_PATTERNS(CHECK_STRING, else)
+
+  Serial.println("Unknown pattern");
 }
+
+#undef CHECK_STRING
+
 
 void setup() {
   delay(500);
@@ -56,7 +54,7 @@ void setup() {
 
   lastUpdateMicros = 0;
 
-  activePatternRenderer = &snowflake2;
+  activePatternRenderer = &instance_of_Snowflakes2;
   Serial.println("LED control running...");
 }
 
