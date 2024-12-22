@@ -25,19 +25,21 @@ ALL_PATTERNS(MAKE_INSTANCE, ;);
 
 PatternRenderer* activePatternRenderer;
 
-void onOptionChange(std::string option) {
-  // Translate each pattern name as a string into the instance of the class
 #define CHECK_STRING(classname)                         \
   if (option.find(#classname) != std::string::npos) {   \
     activePatternRenderer = &instance_of_##classname;   \
     return;                                             \
-
   }
+
+void onOptionChange(std::string option) {
+  // Translate each pattern name as a string into the instance of the class
   ALL_PATTERNS(CHECK_STRING, else)
-#undef CHECK_STRING
 
   Serial.println("Unknown pattern");
 }
+
+#undef CHECK_STRING
+
 
 void setup() {
   delay(500);
@@ -52,7 +54,7 @@ void setup() {
 
   lastUpdateMicros = 0;
 
-  activePatternRenderer = &snowflake2;
+  activePatternRenderer = &instance_of_Snowflakes2;
   Serial.println("LED control running...");
 }
 
