@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 #include <FastLED.h>
-#include "common_led.h"
+#include "patterns.h"
 
 class Wolfram135::Impl {
     // Delay between successive generations.

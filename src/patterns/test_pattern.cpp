@@ -1,4 +1,4 @@
-#include "common_led.h"
+#include "patterns.h"
 #include <crgb.h>
 
 void TestPattern::render(CRGB* leds) {

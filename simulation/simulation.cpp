@@ -1,7 +1,7 @@
 #include <string>
 #include <crgb.h>
 #include "simulation.h"
-#include "common_led.h"
+#include "patterns.h"
 
 // Define an instance of each pattern class
 #define MAKE_INSTANCE(classname) classname instance_of_##classname

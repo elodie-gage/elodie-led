@@ -1,7 +1,7 @@
 #define FASTLED_OVERCLOCK 1.2
 
 #include <FastLED.h>
-#include "common_led.h"
+#include "patterns.h"
 #include <limits.h>
 #include <arduino.h>
 #include "mqtt.h"
