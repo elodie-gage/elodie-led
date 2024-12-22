@@ -5,6 +5,7 @@
 #include <AsyncMqttClient.h>
 #include <iostream>
 #include <functional>
+#include <ArduinoOTA.h>
 
 
 #define QOS_1_AT_LEAST_ONCE 1
@@ -37,7 +38,9 @@ TimerHandle_t wifiReconnectTimer;
 
 std::function<void(std::string)> onOptionChange;
 
+// prototypes
 void connectToMqtt();
+void setupOTA();
 
 void sendConfigurationMessage() {
   mqttClient.publish("homeassistant/select/porch_lights_mode/config", QOS_1_AT_LEAST_ONCE, RETAIN, configuration_payload);
@@ -91,6 +94,9 @@ void onWifiEvent(WiFiEvent_t event) {
     case SYSTEM_EVENT_STA_GOT_IP:
       Serial.print("Connected to WiFi. IP address: ");
       Serial.println(WiFi.localIP());
+
+      setupOTA();
+    
       connectToMqtt();
       break;
     case SYSTEM_EVENT_STA_DISCONNECTED:
@@ -123,6 +129,40 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   onOptionChange(str);
 
   mqttClient.publish("homeassistant/select/porch_lights_mode/state", QOS_1_AT_LEAST_ONCE, RETAIN, buffer);
+}
+
+void setupOTA() {
+  ArduinoOTA.onStart([]() {
+    Serial.println("OTA service started");
+    if (ArduinoOTA.getCommand() == U_FLASH) {
+      Serial.println("Updating sketch");
+    } else { // U_SPIFFS
+      Serial.println("Updating filesystem");
+    }
+  });
+
+  ArduinoOTA.onEnd([]() {
+    Serial.println("\nOTA update complete");
+  });
+
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+    Serial.printf("Progress: %u%%\r", (progress * 100) / total);
+  });
+
+  ArduinoOTA.onError([](ota_error_t error) {
+    Serial.printf("Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+    else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+    else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+    else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+    else if (error == OTA_END_ERROR) Serial.println("End Failed");
+  });
+
+  ArduinoOTA.setPort(3232);
+  // Should not be needed, but it does not seem to respond...
+  ArduinoOTA.setTimeout(10000);
+  ArduinoOTA.begin();
+  Serial.println("Ready for OTA updates");
 }
 
 void connectToMqtt() {

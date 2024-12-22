@@ -5,6 +5,7 @@
 #include <limits.h>
 #include <arduino.h>
 #include "mqtt.h"
+#include <ArduinoOTA.h>
 
 #define INTERVAL_MICROS 20000
 
@@ -48,9 +49,9 @@ void setup() {
   delay(1000);
   Serial.println("Starting...");
 
-  FastLED.addLeds<NEOPIXEL, D4>(leds, NUM_LEDS);
-
   start(onOptionChange);
+
+  FastLED.addLeds<NEOPIXEL, D4>(leds, NUM_LEDS);
 
   lastUpdateMicros = 0;
 
@@ -85,6 +86,8 @@ void loop() {
   // Wait for INTERVAL_MICROS
   ulong totaElapsed;
   do {
+    ArduinoOTA.handle(); // Check for OTA update
+    
     totaElapsed = elapsedMicros(lastUpdateMicros); 
   } while (totaElapsed < INTERVAL_MICROS);
   lastUpdateMicros = micros();
