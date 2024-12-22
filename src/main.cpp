@@ -27,11 +27,11 @@ PatternRenderer* activePatternRenderer;
 
 void onOptionChange(std::string option) {
   // Translate each pattern name as a string into the instance of the class
-
 #define CHECK_STRING(classname)                         \
   if (option.find(#classname) != std::string::npos) {   \
     activePatternRenderer = &instance_of_##classname;   \
     return;                                             \
+
   }
   ALL_PATTERNS(CHECK_STRING, else)
 #undef CHECK_STRING
