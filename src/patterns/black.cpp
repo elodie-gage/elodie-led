@@ -1,16 +1,10 @@
 #include "patterns.h"
 #include <crgb.h>
 
-void LedRace::render(CRGB* leds) {
-  static int offsetPattern;
+/* Default "everything black/off" pattern */
 
-  offsetPattern++;  // Increment the offset
-  if (offsetPattern >= NUM_LEDS) {  // Wrap around
-    offsetPattern = 0;
-  }
-
+void Black::render(CRGB* leds) {
   for (int i = 0; i < NUM_LEDS; i++) {
-    int red = i == offsetPattern ? 255 : 0;
-    leds[i].setRGB(red, 0, 0);
+    leds[i].setRGB(0, 0, 0);
   }
 }

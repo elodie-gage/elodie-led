@@ -55,7 +55,7 @@ void setup() {
 
   lastUpdateMicros = 0;
 
-  activePatternRenderer = &instance_of_LedRace;
+  activePatternRenderer = &instance_of_Black;
   Serial.println("LED control running...");
 }
 

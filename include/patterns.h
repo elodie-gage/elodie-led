@@ -17,6 +17,7 @@ class NAME: public PatternRenderer  {  \
       void render(CRGB* leds) override;   \
 };                                        \
 
+PATTERN_INSTANCE(Black)
 PATTERN_INSTANCE(LedRace)
 PATTERN_INSTANCE(TestPattern)
 PATTERN_INSTANCE(Rainbow)
@@ -46,6 +47,7 @@ class Wolfram135: public PatternRenderer {
  * invocations of the macro X.
  */
 #define ALL_PATTERNS(X, SEPARATOR)                        \
+X(Black) SEPARATOR \
 X(LedRace) SEPARATOR \
 X(TestPattern) SEPARATOR \
 X(Rainbow) SEPARATOR \
