@@ -27,7 +27,7 @@ ALL_PATTERNS(MAKE_INSTANCE, ;);
 PatternRenderer* activePatternRenderer;
 
 #define CHECK_STRING(classname)                         \
-  if (option.find(#classname) != std::string::npos) {   \
+  if (option == #classname) {   \
     activePatternRenderer = &instance_of_##classname;   \
     return;                                             \
   }
