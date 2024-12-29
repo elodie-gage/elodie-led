@@ -2,8 +2,8 @@
 #include <crgb.h>
 #include <chsv.h>
 
-#define RAINBOW_LENGTH 25
-#define FADE_LENGTH 5
+#define RAINBOW_LENGTH 50
+#define FADE_LENGTH 8
 // rainbow runs from hue 0 to this hue (anything higher goes back to red)
 #define END_HUE 220
 
@@ -32,7 +32,7 @@ CHSV colourAtIndex(int idx) {
 void Rainbow2::render(CRGB* leds) {
   static int increment = 0;
 
-  int modifier = increment++ / 10;
+  int modifier = increment++;
 
   for (int led = 0; led < NUM_LEDS; led++) {
     int rainbowIdx = (led + modifier) % NUM_LEDS;
