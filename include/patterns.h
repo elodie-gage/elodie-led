@@ -25,6 +25,7 @@ PATTERN_INSTANCE(Snowflakes1)
 PATTERN_INSTANCE(Snowflakes2)
 PATTERN_INSTANCE(TestPattern2)
 PATTERN_INSTANCE(Twinkles)
+PATTERN_INSTANCE(Rainbow2)
 
 #undef PATTERN_INSTANCE
 
@@ -55,4 +56,5 @@ X(Snowflakes1) SEPARATOR \
 X(Snowflakes2) SEPARATOR \
 X(TestPattern2) SEPARATOR \
 X(Twinkles) SEPARATOR \
+X(Rainbow2) SEPARATOR \
 X(Wolfram135)
