@@ -11,40 +11,21 @@ class PatternRenderer {
       virtual ~PatternRenderer() = default; // Ensure proper cleanup
 };
 
-class LedRace: public PatternRenderer  {
-   public:
-      void render(CRGB* leds) override;
-};
+#define PATTERN_INSTANCE(NAME) \
+class NAME: public PatternRenderer  {  \
+   public:                                \
+      void render(CRGB* leds) override;   \
+};                                        \
 
-class TestPattern: public PatternRenderer  {
-   public:
-      void render(CRGB* leds) override;
-};
+PATTERN_INSTANCE(LedRace)
+PATTERN_INSTANCE(TestPattern)
+PATTERN_INSTANCE(Rainbow)
+PATTERN_INSTANCE(Snowflakes1)
+PATTERN_INSTANCE(Snowflakes2)
+PATTERN_INSTANCE(TestPattern2)
+PATTERN_INSTANCE(Twinkles)
 
-class Rainbow: public PatternRenderer  {
-   public:
-      void render(CRGB* leds) override;
-};
-
-class Snowflakes1: public PatternRenderer  {
-   public:
-      void render(CRGB* leds) override;
-};
-
-class Snowflakes2: public PatternRenderer  {
-   public:
-      void render(CRGB* leds) override;
-};
-
-class TestPattern2: public PatternRenderer  {
-   public:
-      void render(CRGB* leds) override;
-};
-
-class Twinkles: public PatternRenderer  {
-   public:
-      void render(CRGB* leds) override;
-};
+#undef PATTERN_INSTANCE
 
 class Wolfram135: public PatternRenderer {
       class Impl;
