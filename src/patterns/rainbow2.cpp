@@ -32,10 +32,10 @@ CHSV colourAtIndex(int idx) {
 void Rainbow2::render(CRGB* leds) {
   static int increment = 0;
 
-  int modifier = increment++;
+  int modifier = increment++ / 2;
 
   for (int led = 0; led < NUM_LEDS; led++) {
-    int rainbowIdx = (led + modifier) % NUM_LEDS;
+    int rainbowIdx = (led + modifier) % (NUM_LEDS+RAINBOW_LENGTH+FADE_LENGTH+FADE_LENGTH);
 
     leds[led] = colourAtIndex(rainbowIdx);
   }
