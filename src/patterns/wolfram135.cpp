@@ -15,7 +15,7 @@
  * per frame, though the automaton itself evolves at a slower rate.
  */
 
-#include <FastLED.h>
+#include <crgb.h>
 #include <stdint.h>
 
 #include <algorithm>
