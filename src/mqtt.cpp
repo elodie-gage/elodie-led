@@ -1,27 +1,28 @@
-#include "secrets.h"
-#include "patterns.h"
-#include <arduino.h>
-#include <WiFi.h>
-#include <AsyncMqttClient.h>
-#include <iostream>
-#include <functional>
 #include <ArduinoOTA.h>
+#include <AsyncMqttClient.h>
+#include <WiFi.h>
+#include <arduino.h>
 
+#include <functional>
+#include <iostream>
+
+#include "patterns.h"
+#include "secrets.h"
 
 #define QOS_1_AT_LEAST_ONCE 1
 #define RETAIN true
 #define BUFFER_LEN 64
 char buffer[BUFFER_LEN];
-const char * configuration_payload = R"END(
+const char* configuration_payload = R"END(
 {
   "name": "Porch Lights Mode",
   "command_topic": "homeassistant/select/porch_lights_mode/set",
   "state_topic": "homeassistant/select/porch_lights_mode/state",
   "options": [)END"
 #define QUOTE_PATTERN(classname) "\"" #classname "\""
-ALL_PATTERNS(QUOTE_PATTERN, ", ")
+    ALL_PATTERNS(QUOTE_PATTERN, ", ")
 #undef QUOTE_PATTERN
-R"END(],
+        R"END(],
   "unique_id": "porch_lights_mode",
   "device": {
     "identifiers": ["porch_lights_001"],
@@ -30,7 +31,7 @@ R"END(],
     "model": "Porch Lights"
   }
 }
-)END"; 
+)END";
 
 AsyncMqttClient mqttClient;
 TimerHandle_t mqttReconnectTimer;
@@ -43,7 +44,8 @@ void connectToMqtt();
 void setupOTA();
 
 void sendConfigurationMessage() {
-  mqttClient.publish("homeassistant/select/porch_lights_mode/config", QOS_1_AT_LEAST_ONCE, RETAIN, configuration_payload);
+  mqttClient.publish("homeassistant/select/porch_lights_mode/config",
+                     QOS_1_AT_LEAST_ONCE, RETAIN, configuration_payload);
 }
 
 void onMqttConnect(bool sessionPresent) {
@@ -51,8 +53,10 @@ void onMqttConnect(bool sessionPresent) {
   Serial.print("Session present: ");
   Serial.println(sessionPresent);
 
-  mqttClient.subscribe("homeassistant/select/porch_lights_mode/set", QOS_1_AT_LEAST_ONCE);
-  mqttClient.subscribe("homeassistant/select/porch_lights_mode/state", QOS_1_AT_LEAST_ONCE);
+  mqttClient.subscribe("homeassistant/select/porch_lights_mode/set",
+                       QOS_1_AT_LEAST_ONCE);
+  mqttClient.subscribe("homeassistant/select/porch_lights_mode/state",
+                       QOS_1_AT_LEAST_ONCE);
   Serial.println("Subscribed");
 
   sendConfigurationMessage();
@@ -84,7 +88,7 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
       Serial.println("Unknown reason.");
   }
   if (WiFi.isConnected()) {
-    xTimerStop(mqttReconnectTimer, 0); // Reset
+    xTimerStop(mqttReconnectTimer, 0);  // Reset
     xTimerStart(mqttReconnectTimer, 0);
   }
 }
@@ -96,12 +100,13 @@ void onWifiEvent(WiFiEvent_t event) {
       Serial.println(WiFi.localIP());
 
       setupOTA();
-    
+
       connectToMqtt();
       break;
     case SYSTEM_EVENT_STA_DISCONNECTED:
       Serial.println("Disconnected from Wi-Fi.");
-      xTimerStop(mqttReconnectTimer, 0); // Ensure MQTT reconnect timer is stopped
+      xTimerStop(mqttReconnectTimer,
+                 0);  // Ensure MQTT reconnect timer is stopped
       xTimerStart(wifiReconnectTimer, 0);
       break;
     default:
@@ -113,7 +118,8 @@ void onWifiEvent(WiFiEvent_t event) {
 void setMessage(std::string message) {
   onOptionChange(message);
 
-  mqttClient.publish("homeassistant/select/porch_lights_mode/state", QOS_1_AT_LEAST_ONCE, RETAIN, message.c_str());
+  mqttClient.publish("homeassistant/select/porch_lights_mode/state",
+                     QOS_1_AT_LEAST_ONCE, RETAIN, message.c_str());
 }
 
 void stateMessage(std::string message) {
@@ -121,17 +127,18 @@ void stateMessage(std::string message) {
   onOptionChange(message);
 }
 
-
-void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
+void onMqttMessage(char* topic, char* payload,
+                   AsyncMqttClientMessageProperties properties, size_t len,
+                   size_t index, size_t total) {
   if (len >= BUFFER_LEN) {
     Serial.println("Payload too big!");
     return;
-  } 
+  }
   for (size_t i = 0; i < len; ++i) {
-      buffer[i] = payload[i];
+    buffer[i] = payload[i];
   }
   buffer[len] = 0;
-  
+
   Serial.print("Topic: [");
   Serial.print(topic);
   Serial.print("] Message: [");
@@ -142,7 +149,8 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   std::string message(buffer);
   if (topic_string.find("porch_lights_mode/set") != std::string::npos) {
     setMessage(message);
-  } else if (topic_string.find("porch_lights_mode/state") != std::string::npos) {
+  } else if (topic_string.find("porch_lights_mode/state") !=
+             std::string::npos) {
     stateMessage(message);
   } else {
     Serial.print("Unknown topic: ");
@@ -155,14 +163,12 @@ void setupOTA() {
     Serial.println("OTA service started");
     if (ArduinoOTA.getCommand() == U_FLASH) {
       Serial.println("Updating sketch");
-    } else { // U_SPIFFS
+    } else {  // U_SPIFFS
       Serial.println("Updating filesystem");
     }
   });
 
-  ArduinoOTA.onEnd([]() {
-    Serial.println("\nOTA update complete");
-  });
+  ArduinoOTA.onEnd([]() { Serial.println("\nOTA update complete"); });
 
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
     Serial.printf("Progress: %u%%\r", (progress * 100) / total);
@@ -170,11 +176,16 @@ void setupOTA() {
 
   ArduinoOTA.onError([](ota_error_t error) {
     Serial.printf("Error[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-    else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-    else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-    else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-    else if (error == OTA_END_ERROR) Serial.println("End Failed");
+    if (error == OTA_AUTH_ERROR)
+      Serial.println("Auth Failed");
+    else if (error == OTA_BEGIN_ERROR)
+      Serial.println("Begin Failed");
+    else if (error == OTA_CONNECT_ERROR)
+      Serial.println("Connect Failed");
+    else if (error == OTA_RECEIVE_ERROR)
+      Serial.println("Receive Failed");
+    else if (error == OTA_END_ERROR)
+      Serial.println("End Failed");
   });
 
   ArduinoOTA.setPort(3232);
@@ -193,17 +204,18 @@ void start(std::function<void(std::string)> callback) {
   onOptionChange = callback;
 
   Serial.println("Connecting...");
-  mqttReconnectTimer = xTimerCreate("mqttTimer", pdMS_TO_TICKS(2000), pdFALSE, (void*)0, [](TimerHandle_t xTimer) {
-    connectToMqtt();
-  });
+  mqttReconnectTimer =
+      xTimerCreate("mqttTimer", pdMS_TO_TICKS(2000), pdFALSE, (void*)0,
+                   [](TimerHandle_t xTimer) { connectToMqtt(); });
 
-  wifiReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(2000), pdFALSE, (void*)0, [](TimerHandle_t xTimer) {
-    Serial.println("Starting wifi...");
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  });
+  wifiReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(2000), pdFALSE,
+                                    (void*)0, [](TimerHandle_t xTimer) {
+                                      Serial.println("Starting wifi...");
+                                      WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+                                    });
 
-  WiFi.onEvent(onWifiEvent); 
-  
+  WiFi.onEvent(onWifiEvent);
+
   mqttClient.setServer(MQTT_HOST, MQTT_PORT);
   mqttClient.setCredentials(MQTT_USER, MQTT_PASSWORD);
   mqttClient.onConnect(onMqttConnect);

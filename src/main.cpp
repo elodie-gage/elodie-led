@@ -1,16 +1,17 @@
 #define FASTLED_OVERCLOCK 1.2
 
-#include <FastLED.h>
-#include "patterns.h"
-#include <limits.h>
-#include <arduino.h>
-#include "mqtt.h"
 #include <ArduinoOTA.h>
+#include <FastLED.h>
+#include <arduino.h>
+#include <limits.h>
+
+#include "mqtt.h"
+#include "patterns.h"
 
 #define INTERVAL_MICROS 20000
 
 #define STATS_EVERY 1000
-//#define PRINT_STATS 1
+// #define PRINT_STATS 1
 
 typedef unsigned long ulong;
 
@@ -26,10 +27,10 @@ ALL_PATTERNS(MAKE_INSTANCE, ;);
 
 PatternRenderer* activePatternRenderer;
 
-#define CHECK_STRING(classname)                         \
-  if (option == #classname) {   \
-    activePatternRenderer = &instance_of_##classname;   \
-    return;                                             \
+#define CHECK_STRING(classname)                       \
+  if (option == #classname) {                         \
+    activePatternRenderer = &instance_of_##classname; \
+    return;                                           \
   }
 
 void onOptionChange(std::string option) {
@@ -41,10 +42,9 @@ void onOptionChange(std::string option) {
 
 #undef CHECK_STRING
 
-
 void setup() {
   delay(500);
-  
+
   Serial.begin(115200);
   delay(1000);
   Serial.println("Starting...");
@@ -60,41 +60,39 @@ void setup() {
 }
 
 ulong elapsedMicros(ulong since) {
-    ulong microsNow = micros();
-    ulong elapsed = microsNow - lastUpdateMicros; 
-    if (elapsed < 0) {
-      // clock has overflowed
-      elapsed += ULONG_MAX;
-    }
-    return elapsed;
+  ulong microsNow = micros();
+  ulong elapsed = microsNow - lastUpdateMicros;
+  if (elapsed < 0) {
+    // clock has overflowed
+    elapsed += ULONG_MAX;
+  }
+  return elapsed;
 }
 
 void loop() {
-
   static ulong totalRenderElapsed = 0;
   static ulong totalShowElapsed = 0;
   static int loopCount = 0;
 
   activePatternRenderer->render(leds);
-  ulong renderElapsed = elapsedMicros(lastUpdateMicros); 
+  ulong renderElapsed = elapsedMicros(lastUpdateMicros);
   totalRenderElapsed += renderElapsed;
 
   FastLED.show();
-  ulong showElapsed = elapsedMicros(lastUpdateMicros) - renderElapsed; 
+  ulong showElapsed = elapsedMicros(lastUpdateMicros) - renderElapsed;
   totalShowElapsed += showElapsed;
 
   // Wait for INTERVAL_MICROS
   ulong totaElapsed;
   do {
-    ArduinoOTA.handle(); // Check for OTA update
-    
-    totaElapsed = elapsedMicros(lastUpdateMicros); 
+    ArduinoOTA.handle();  // Check for OTA update
+
+    totaElapsed = elapsedMicros(lastUpdateMicros);
   } while (totaElapsed < INTERVAL_MICROS);
   lastUpdateMicros = micros();
 
   if (loopCount++ > STATS_EVERY) {
-
-    #ifdef PRINT_STATS
+#ifdef PRINT_STATS
     ulong averageRenderElapsed = totalRenderElapsed / loopCount;
     ulong averageShowElapsed = totalShowElapsed / loopCount;
 
@@ -103,11 +101,10 @@ void loop() {
     Serial.print("us. Avg show ");
     Serial.print(averageShowElapsed);
     Serial.println("us");
-    #endif
+#endif
 
     totalShowElapsed = 0;
     totalRenderElapsed = 0;
     loopCount = 0;
   }
 }
-

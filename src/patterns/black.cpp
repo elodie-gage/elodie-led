@@ -1,5 +1,6 @@
-#include "patterns.h"
 #include <crgb.h>
+
+#include "patterns.h"
 
 /* Default "everything black/off" pattern */
 

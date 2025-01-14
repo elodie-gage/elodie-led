@@ -1,5 +1,6 @@
-#include "patterns.h"
 #include <crgb.h>
+
+#include "patterns.h"
 
 void TestPattern::render(CRGB* leds) {
   for (int i = 0; i < NUM_LEDS; i++) {
