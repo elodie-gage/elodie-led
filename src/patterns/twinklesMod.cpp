@@ -15,7 +15,6 @@ class Twinkle2 : public MultiPatternItem {
   int scaleDownRate;
   int scaleDownFromSeq;
   int deathSeq;
-  bool isRainbow;
 
  public:
   Twinkle2(int randValue) {
@@ -25,25 +24,19 @@ class Twinkle2 : public MultiPatternItem {
 
     int colorChoice = randValue % 1000;
 
-    isRainbow = false;
     if (colorChoice < 800) {
       color = CRGB(255, 255, 255);  // white
       scaleUpRate = 5;
       scaleDownRate = 5;
-    } else if (colorChoice < 970) {
+    } else {
       color = CRGB(245, 239, 66);  // gold
       scaleUpRate = 2;
       scaleDownRate = 2;
-    } else {
-      isRainbow = true;
-      deathSeq = 220;
     }
 
-    if (!isRainbow) {
-      scaleDownFromSeq = 255 / scaleUpRate;
-      deathSeq =
-          scaleDownFromSeq + (scaleUpRate * scaleDownFromSeq) / scaleDownRate;
-    }
+    scaleDownFromSeq = 255 / scaleUpRate;
+    deathSeq =
+        scaleDownFromSeq + (scaleUpRate * scaleDownFromSeq) / scaleDownRate;
   }
 
   void update() override { seq++; }
@@ -51,19 +44,45 @@ class Twinkle2 : public MultiPatternItem {
   bool isDead() override { return seq >= deathSeq; }
 
   void render(CRGB* leds) override {
-    if (isRainbow) {
-      uint8_t hue = seq;
-      leds[pos].setHSV(hue, 255, 255);
-    } else {
-      int fadeFactor = seq < scaleDownFromSeq
-                           ? seq * scaleUpRate
-                           : (scaleDownFromSeq * scaleUpRate) -
-                                 ((seq - scaleDownFromSeq) * scaleDownRate);
+    int fadeFactor = seq < scaleDownFromSeq
+                         ? seq * scaleUpRate
+                         : (scaleDownFromSeq * scaleUpRate) -
+                               ((seq - scaleDownFromSeq) * scaleDownRate);
 
-      if (fadeFactor > 0) {
-        leds[pos] = color.scale8(fadeFactor);
-      }
+    if (fadeFactor > 0) {
+      leds[pos] = color.scale8(fadeFactor);
     }
+  }
+};
+
+class RainbowTwinkle : public MultiPatternItem {
+ private:
+  int pos;
+  CRGB color;
+  int seq;
+  int scaleUpRate;
+  int scaleDownRate;
+  int scaleDownFromSeq;
+  int deathSeq;
+
+ public:
+  RainbowTwinkle(int randValue) {
+    seq = 0;
+
+    pos = randValue % NUM_LEDS;
+
+    int colorChoice = randValue % 1000;
+
+    deathSeq = 220;
+  }
+
+  void update() override { seq++; }
+
+  bool isDead() override { return seq >= deathSeq; }
+
+  void render(CRGB* leds) override {
+    uint8_t hue = seq;
+    leds[pos].setHSV(hue, 255, 255);
   }
 };
 
@@ -84,8 +103,11 @@ void TwinklesMod::Impl::render(CRGB* leds) {
   int randValue = rand();
 
   // Spawn new twinkle
-  if (randValue % 25 < 2) {
+  if (randValue % 100 < 5) {
     multiPatternRenderer.addPattern(std::make_unique<Twinkle2>(randValue));
+  } else if (randValue % 100 < 10) {
+    multiPatternRenderer.addPattern(
+        std::make_unique<RainbowTwinkle>(randValue));
   }
 
   multiPatternRenderer.render(leds);
