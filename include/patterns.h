@@ -57,11 +57,10 @@ PATTERN_INSTANCE(Rainbow)
 PATTERN_INSTANCE(Snowflakes1)
 PATTERN_INSTANCE(Snowflakes2)
 PATTERN_INSTANCE(TestPattern2)
-PATTERN_INSTANCE(Twinkles)
 PATTERN_INSTANCE(Rainbow2)
 PATTERN_INSTANCE(Bounce)
 COMPLEX_PATTERN_INSTANCE(Wolfram135)
-COMPLEX_PATTERN_INSTANCE(TwinklesMod)
+COMPLEX_PATTERN_INSTANCE(Twinkles)
 
 #undef PATTERN_INSTANCE
 #undef COMPLEX_PATTERN_INSTANCE
@@ -83,6 +82,5 @@ COMPLEX_PATTERN_INSTANCE(TwinklesMod)
   X(Snowflakes1) SEPARATOR X(Snowflakes2) \
   SEPARATOR                               \
   X(TestPattern2) SEPARATOR X(Twinkles)   \
-  SEPARATOR                               \
-  X(TwinklesMod) SEPARATOR X(Rainbow2)    \
+  SEPARATOR X(Rainbow2)                   \
   SEPARATOR X(Wolfram135)
