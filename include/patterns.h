@@ -1,6 +1,7 @@
 #include <FastLED.h>
 
 #include <memory>
+#include <vector>
 #define NUM_LEDS 428
 // 214 on each side plus slope
 // 132 on each side
@@ -17,10 +18,13 @@ class MultiPatternItem {
   virtual void update() = 0;
   virtual bool isDead() = 0;
   virtual void render(CRGB* leds) = 0;
-  virtual ~MultiPatternItem() = default;  // Ensure proper cleanup
+  virtual ~MultiPatternItem() = default;
 };
 
 class MultiPatternRenderer {
+ private:
+  std::vector<std::unique_ptr<MultiPatternItem>> patterns;
+
  public:
   void render(CRGB* leds);
   ~MultiPatternRenderer() = default;  // Ensure proper cleanup
