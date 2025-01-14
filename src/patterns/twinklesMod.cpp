@@ -1,7 +1,6 @@
 #include <crgb.h>
 
 #include <algorithm>
-#include <iostream>
 #include <iterator>
 #include <vector>
 
@@ -14,7 +13,7 @@ class Twinkle2 : public MultiPatternItem {
  public:
   Twinkle2(int randValue) { pos = randValue % NUM_LEDS; }
 
-  void update() override { std::cout << "Update!" << std::endl; }
+  void update() override {}
 
   bool isDead() override { return false; }
 
