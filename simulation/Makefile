@@ -16,6 +16,7 @@ compile:
 		${PROJ}/.pio/libdeps/seeed_xiao_esp32c3/FastLED/src/fl/str.cpp \
 		${PROJ}/.pio/libdeps/seeed_xiao_esp32c3/FastLED/src/fl/json.cpp \
 		${PROJ}/.pio/libdeps/seeed_xiao_esp32c3/FastLED/src/fl/allocator.cpp \
+		${PROJ}/src/led_common.cpp \
 		${PROJ}/src/patterns/*.cpp \
 		${PROJ}/src/patterns/multipattern/*.cpp \
 		simulation.cpp
