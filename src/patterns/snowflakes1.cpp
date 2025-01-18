@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 
+#include "led_common.h"
 #include "patterns.h"
 
 void Snowflakes1::render(CRGB* leds) {
@@ -11,7 +12,7 @@ void Snowflakes1::render(CRGB* leds) {
   static const int sideLength = 214;
 
   // Clear LEDs
-  fill_solid(leds, NUM_LEDS, CRGB::Black);
+  fill_black(leds, NUM_LEDS);
 
   int valP = 2;
   // Spawn new snowflakes

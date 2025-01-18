@@ -4,6 +4,7 @@
 #include <iterator>
 #include <vector>
 
+#include "led_common.h"
 #include "patterns.h"
 
 void MultiPatternRenderer::addPattern(std::unique_ptr<MultiPatternItem> item) {
@@ -12,7 +13,7 @@ void MultiPatternRenderer::addPattern(std::unique_ptr<MultiPatternItem> item) {
 
 void MultiPatternRenderer::render(CRGB* leds) {
   // Clear LEDs
-  fill_solid(leds, NUM_LEDS, CRGB::Black);
+  fill_black(leds, NUM_LEDS);
 
   for (const auto& pattern : patterns) {
     pattern->update();

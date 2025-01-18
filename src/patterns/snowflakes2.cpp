@@ -4,6 +4,7 @@
 #include <iterator>
 #include <vector>
 
+#include "led_common.h"
 #include "patterns.h"
 
 enum Side { Left, Right };
@@ -60,13 +61,13 @@ class Snowflake {
 void Snowflakes2::render(CRGB* leds) {
   static std::vector<Snowflake> snowflakes;
 
-  static const CRGB snowflakeColours[] = {CRGB(182, 129, 37),  //
-                                          // CRGB(255, 247, 21),
-                                          // CRGB(158, 32, 0),
-                                          CRGB(255, 255, 230)};
+  static const CRGB snowflakeColours[] = {
+      CRGB(182, 129, 37),  //
+                           // CRGB(255, 247, 21),
+                           // CRGB(158, 32, 0),
+      CRGB(255, 255, 230)};
 
-  // Clear LEDs
-  fill_solid(leds, NUM_LEDS, CRGB::Black);
+  fill_black(leds, NUM_LEDS);
 
   int randValue = rand();
 

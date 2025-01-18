@@ -1,36 +1,14 @@
-#include <FastLED.h>
+#pragma once
+#include <crgb.h>
 
 #include <memory>
 #include <vector>
-#define NUM_LEDS 428
+
+#include "led_common.h"
+
 // 214 on each side plus slope
 // 132 on each side
 // 82 on each slope
-
-class PatternRenderer {
- public:
-  virtual void render(CRGB* leds) = 0;
-  virtual ~PatternRenderer() = default;  // Ensure proper cleanup
-};
-
-class MultiPatternItem {
- public:
-  virtual void update() = 0;
-  virtual bool isDead() = 0;
-  virtual void render(CRGB* leds) = 0;
-  virtual ~MultiPatternItem() = default;
-};
-
-class MultiPatternRenderer {
- private:
-  std::vector<std::unique_ptr<MultiPatternItem>> patterns;
-
- public:
-  void render(CRGB* leds);
-  ~MultiPatternRenderer() = default;  // Ensure proper cleanup
-
-  void addPattern(std::unique_ptr<MultiPatternItem>);
-};
 
 #define PATTERN_INSTANCE(NAME)          \
   class NAME : public PatternRenderer { \
@@ -50,7 +28,6 @@ class MultiPatternRenderer {
   };
 
 PATTERN_INSTANCE(Black)
-
 PATTERN_INSTANCE(LedRace)
 PATTERN_INSTANCE(TestPattern)
 PATTERN_INSTANCE(Rainbow)
