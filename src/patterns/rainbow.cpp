@@ -1,5 +1,6 @@
 #include <crgb.h>
 
+#include "led_common.h"
 #include "patterns.h"
 
 void Rainbow::render(CRGB* leds) {
