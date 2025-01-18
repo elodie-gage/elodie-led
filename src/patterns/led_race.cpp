@@ -1,10 +1,11 @@
-#include "patterns.h"
 #include <crgb.h>
+
+#include "patterns.h"
 
 void LedRace::render(CRGB* leds) {
   static int offsetPattern;
 
-  offsetPattern++;  // Increment the offset
+  offsetPattern++;                  // Increment the offset
   if (offsetPattern >= NUM_LEDS) {  // Wrap around
     offsetPattern = 0;
   }

@@ -1,6 +1,7 @@
-#include "patterns.h"
 #include <crgb.h>
 
+#include "led_common.h"
+#include "patterns.h"
 
 void Rainbow::render(CRGB* leds) {
   static int increment = 0;
@@ -17,5 +18,4 @@ void Rainbow::render(CRGB* leds) {
   }
 
   increment++;
-
 }
