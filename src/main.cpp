@@ -132,6 +132,10 @@ void loop() {
       Serial.println("Change to test pattern");
       activePatternRenderer = &instance_of_TestPattern;
     }
+    if (results.value == 0xFFE21D) {
+      Serial.println("Change to black");
+      activePatternRenderer = &instance_of_Black;
+    }
 
     irrecv.resume();  // Receive the next value
   }
