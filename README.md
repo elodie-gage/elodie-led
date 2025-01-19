@@ -1,21 +1,18 @@
 
-Control code for a string of LEDS arranged over my porch.
+Control code for a string of LEDS arranged around 2 sides of my bedroom.
 
 The LEDS are arranged in roughly this shape:
 
 ```
-      o
-     o o
-    o   o
-   o     o
-  o       o
-  o       o
-  o       o
-  o       o
-  o       o
-  o       o
+o o o o o o o o o o o o o o o o o
+                                o
+                                o
+                                o
+                                o
+                                o
+
 ```
-There are 132 LEDs on each vertical side and 82 on each sloped section. This comes to 428 in total.
+There are 372 in total.
 
 # Patterns
 
