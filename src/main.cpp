@@ -2,12 +2,14 @@
 
 #include <ArduinoOTA.h>
 #include <FastLED.h>
+#include <IRrecv.h>
+#include <IRutils.h>
 #include <arduino.h>
 #include <limits.h>
 
 #include "mqtt.h"
 #include "patterns.h"
-
+#define IR_PIN D10
 #define INTERVAL_MICROS 20000
 
 #define STATS_EVERY 1000
@@ -16,6 +18,9 @@
 typedef unsigned long ulong;
 
 CRGB leds[NUM_LEDS];
+
+IRrecv irrecv(IR_PIN);
+decode_results results;
 
 ulong lastUpdateMicros;
 ulong lastSerialUpdateMicros;
@@ -48,6 +53,8 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
   Serial.println("Starting...");
+  irrecv.enableIRIn();  // Start the receiver
+  Serial.println("Enable IR");
 
   start(onOptionChange);
 
@@ -70,41 +77,62 @@ ulong elapsedMicros(ulong since) {
 }
 
 void loop() {
-  static ulong totalRenderElapsed = 0;
-  static ulong totalShowElapsed = 0;
-  static int loopCount = 0;
+  //   static ulong totalRenderElapsed = 0;
+  //   static ulong totalShowElapsed = 0;
+  //   static int loopCount = 0;
 
   activePatternRenderer->render(leds);
-  ulong renderElapsed = elapsedMicros(lastUpdateMicros);
-  totalRenderElapsed += renderElapsed;
+  //   ulong renderElapsed = elapsedMicros(lastUpdateMicros);
+  //   totalRenderElapsed += renderElapsed;
 
   FastLED.show();
-  ulong showElapsed = elapsedMicros(lastUpdateMicros) - renderElapsed;
-  totalShowElapsed += showElapsed;
+  //   ulong showElapsed = elapsedMicros(lastUpdateMicros) - renderElapsed;
+  //   totalShowElapsed += showElapsed;
 
-  // Wait for INTERVAL_MICROS
-  ulong totaElapsed;
-  do {
-    ArduinoOTA.handle();  // Check for OTA update
+  //   // Wait for INTERVAL_MICROS
+  //   ulong totaElapsed;
+  //   do {
+  //     ArduinoOTA.handle();  // Check for OTA update
 
-    totaElapsed = elapsedMicros(lastUpdateMicros);
-  } while (totaElapsed < INTERVAL_MICROS);
-  lastUpdateMicros = micros();
+  //     totaElapsed = elapsedMicros(lastUpdateMicros);
+  //   } while (totaElapsed < INTERVAL_MICROS);
+  //   lastUpdateMicros = micros();
 
-  if (loopCount++ > STATS_EVERY) {
-#ifdef PRINT_STATS
-    ulong averageRenderElapsed = totalRenderElapsed / loopCount;
-    ulong averageShowElapsed = totalShowElapsed / loopCount;
+  //   if (loopCount++ > STATS_EVERY) {
+  // #ifdef PRINT_STATS
+  //     ulong averageRenderElapsed = totalRenderElapsed / loopCount;
+  //     ulong averageShowElapsed = totalShowElapsed / loopCount;
 
-    Serial.print("Avg render ");
-    Serial.print(averageRenderElapsed);
-    Serial.print("us. Avg show ");
-    Serial.print(averageShowElapsed);
-    Serial.println("us");
-#endif
+  //     Serial.print("Avg render ");
+  //     Serial.print(averageRenderElapsed);
+  //     Serial.print("us. Avg show ");
+  //     Serial.print(averageShowElapsed);
+  //     Serial.println("us");
+  // #endif
 
-    totalShowElapsed = 0;
-    totalRenderElapsed = 0;
-    loopCount = 0;
+  //     totalShowElapsed = 0;
+  //     totalRenderElapsed = 0;
+  //     loopCount = 0;
+  //   }
+
+  if (irrecv.decode(&results)) {
+    // Serial.println(resultToHumanReadableBasic(&results));
+    serialPrintUint64(results.value, HEX);
+    Serial.print("\n");
+
+    if (results.value == 0xFF22DD) {
+      Serial.println("Change to rainbow");
+      activePatternRenderer = &instance_of_Rainbow;
+    }
+    if (results.value == 0xFFC23D) {
+      Serial.println("Change to other rainbow");
+      activePatternRenderer = &instance_of_Rainbow2;
+    }
+    if (results.value == 0xFFE01F) {
+      Serial.println("Change to test pattern");
+      activePatternRenderer = &instance_of_TestPattern;
+    }
+
+    irrecv.resume();  // Receive the next value
   }
 }
